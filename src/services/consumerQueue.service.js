@@ -44,7 +44,6 @@ const messageService = {
           );
           channel.ack(msg);
         } catch (error) {
-          console.error("Send notification error", error);
           channel.ack(msg, false, false);
         }
       });
