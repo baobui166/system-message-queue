@@ -18,12 +18,35 @@ const messageService = {
       const { channel } = await connnectRabbitMQ();
       const notiQueue = "notificationQueueProcess";
 
+      // 1 TTL
+      // const timeout = 15000;
+      // setTimeout(() => {
+      //   channel.consume(notiQueue, (msg) => {
+      //     console.log(
+      //       "Send notification success process",
+      //       msg.content.toString()
+      //     );
+      //     channel.ack(msg);
+      //   });
+      // }, timeout);
+
+      // 2.logic
+
       channel.consume(notiQueue, (msg) => {
-        console.log(
-          "Send notification success process",
-          msg.content.toString()
-        );
-        channel.ack(msg);
+        try {
+          const numberTest = Math.random();
+
+          if (numberTest < 0.8)
+            throw new Error("Send notification message failed!!!");
+          console.log(
+            "Send notification success process",
+            msg.content.toString()
+          );
+          channel.ack(msg);
+        } catch (error) {
+          console.error("Send notification error", error);
+          channel.ack(msg, false, false);
+        }
       });
     } catch (error) {
       console.error(error);
